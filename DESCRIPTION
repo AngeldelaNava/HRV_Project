@@ -1,0 +1,5 @@
+Package: RHRVGui
+Type: Package
+Title: Graphical User Interface for Heart Rate Variability Analysis
+Version: 0.0.1.0
+RoxygenNote: 7.2.3
