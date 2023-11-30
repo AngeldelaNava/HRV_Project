@@ -56,23 +56,30 @@ inputOutputControl <- function(input, output, session, hrv.data){
         }
         A <- csvSum(A, BANDS)
         B <- csvSum(B, ENERGY)
-        
+
+        hide(input$eDSpinner)
+        hide(input$tLSpinner)
+        hide(input$cDSpinner)
+        hide(input$mLSpinner)
         if(input$start_nla){
           tryCatch({
+            show(input$eDSpinner)
+            show(input$tLSpinner)
             hrv.data = CreateNonLinearAnalysis(hrv.data)
             kTimeLag = CalculateTimeLag(
               hrv.data, method = "first.minimum", lagMax = input$lagMax,
               doPlot = FALSE)
             timeLag(input, output, session, hrv.data, kTimeLag)
-            
+            hide(input$tLSpinner)
             kEmbeddingDim = CalculateEmbeddingDim(
               hrv.data, numberPoints = input$numberPoints, timeLag = kTimeLag,
               maxEmbeddingDim = input$maxEmbeddingDim, doPlot = FALSE)
             embeddingDim(input, output, session, hrv.data, kTimeLag,
                          kEmbeddingDim)
-            
+            hide(input$eDSpinner)
             if(input$start_cd){
               tryCatch({
+                show(input$cDSpinner)
                 hrv.data = CalculateCorrDim(
                   hrv.data, indexNonLinearAnalysis = 1,
                   minEmbeddingDim = kEmbeddingDim - 1,
@@ -81,8 +88,10 @@ inputOutputControl <- function(input, output, session, hrv.data){
                   pointsRadius = input$pointsRadius,
                   theilerWindow = input$theilerWindow, doPlot = FALSE)
                 correlationDimensionCalculation(output, hrv.data)
-                
+                hide(input$cDSpinner)
                 if(input$reg_correlation){
+                  hide(output$corr_plot)
+                  show(input$cDSpinner)
                   hrv.data = EstimateCorrDim(
                     hrv.data, indexNonLinearAnalysis = 1,
                     regressionRange = c(input$minRegC, input$maxRegC),
@@ -93,6 +102,8 @@ inputOutputControl <- function(input, output, session, hrv.data){
                   B <- csvSum(B, C)
                   correlationDimensionEstimation(input, output, kEmbeddingDim,
                                                  hrv.data)
+                  show(output$corr_plot)
+                  hide(input$cDSpinner)
                   correlatonStatistic(output, hrv.data)
                   if(input$csv_button_c){
                     C = hrv.data$NonLinearAnalysis[[1]]$correlation$statistic
@@ -108,6 +119,7 @@ inputOutputControl <- function(input, output, session, hrv.data){
             
             if(input$start_lya){
               tryCatch({
+                show(input$mLSpinner)
                 hrv.data = CalculateMaxLyapunov(
                   hrv.data, indexNonLinearAnalysis = 1,
                   minEmbeddingDim = kEmbeddingDim,
@@ -115,8 +127,10 @@ inputOutputControl <- function(input, output, session, hrv.data){
                   radius = input$radius, theilerWindow = input$theilerWindowLya,
                   doPlot = FALSE)
                 lyapunovCalculation(output, hrv.data)
-                
+                hide(input$mLSpinner)
                 if(input$reg_lya){
+                  hide(output$lya_plot)
+                  show(input$mLSpinner)
                   hrv.data = EstimateMaxLyapunov(
                     hrv.data, indexNonLinearAnalysis = 1,
                     regressionRange = c(input$minRegL, input$maxRegL),
@@ -126,6 +140,8 @@ inputOutputControl <- function(input, output, session, hrv.data){
                   C = hrv.data$NonLinearAnalysis[[1]]$lyapunov$statistic
                   B <- csvSum(B, C)
                   lyapunovEstimation(input, output, kEmbeddingDim, hrv.data)
+                  show(output$lya_plot)
+                  hide(input$mLSpinner)
                   lyapunovStatistic(output, hrv.data)
                   if(input$csv_button_ml){
                     csvDownload(data.frame(c("Max. Lyapunov Statistic"), c(C)),

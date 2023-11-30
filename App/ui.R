@@ -1,4 +1,7 @@
+library(shinyjs)
+library(shinycssloaders)
 user_interface <- fluidPage(
+  useShinyjs(),
   titlePanel("Heart Rate Variability Analysis"),
   sidebarLayout(
     sidebarPanel(
@@ -135,19 +138,19 @@ user_interface <- fluidPage(
                                        tabPanel(("Embedding Dimension & Timelag"),
                                                 h3("Nonlinear Analysis: Embedding Dimension and Timelag estimations"),
                                                 strong("Time Lag Estimation"),
-                                                plotOutput("time_lag"),
+                                                withSpinner(hide.ui = TRUE, id = "tLSpinner", plotOutput("time_lag")),
                                                 strong("Embedding Dimension Estimation"),
-                                                plotOutput("emb_dim")
+                                                withSpinner(hide.ui = TRUE, id = "eDSpinner", plotOutput("emb_dim"))
                                        ),
                                        tabPanel("Correlation Dimension",
                                                 h3("Nonlinear Analysis by Correlation Dimension"),
-                                                plotOutput("corr_plot"),
+                                                withSpinner(hide.ui = TRUE, id = "cDSpinner", plotOutput("corr_plot")),
                                                 p("Value of the statistic: ",
                                                   textOutput("corr_text"))
                                        ),
                                        tabPanel("Maximum Lyapunov",
                                                 h3("Nonlinear Analysis by Maximum Lyapunov Exponent"),
-                                                plotOutput("lya_plot"),
+                                                withSpinner(hide.ui = TRUE, id = "mLSpinner", plotOutput("lya_plot")),
                                                 p("Value of the statistic: ",
                                                   textOutput("lya_text"))
                                        )
