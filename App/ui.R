@@ -57,7 +57,47 @@ user_interface <- fluidPage(
                            actionButton("csv_button_f",
                                         "Download freq_analysis.csv")
                   ),
+                  tabPanel("Time-Freq Analysis",
+                           numericInput("size_tf", "Choose the size of the powerband calculations",
+                                        min = 0, max = 1000, value = 300),
+                           numericInput("shift", "Choose the displacement of the powerband calculations",
+                                        min = 0, max = 100, value = 30),
+                           strong("Choose the ULF band values for 
+                                       Fourier Analysis"),
+                           splitLayout(
+                             numericInput("ULF1_tf", "", value = 0.0,
+                                          min = 0.0, max = 1.0),
+                             numericInput("ULF2_tf", "", value = 0.03,
+                                          min = 0.0, max = 1.0)
+                           ),
+                           strong("Choose the VLF band values for 
+                                       Fourier Analysis"),
+                           splitLayout(
+                             numericInput("VLF1_tf", "", value = 0.03,
+                                          min = 0.0, max = 1.0),
+                             numericInput("VLF2_tf", "", value = 0.05,
+                                          min = 0.0, max = 1.0)
+                           ),
+                           strong("Choose the LF band values for 
+                                       Fourier Analysis"),
+                           splitLayout(
+                             numericInput("LF1_tf", "", value = 0.05,
+                                          min = 0.0, max = 1.0),
+                             numericInput("LF2_tf", "", value = 0.15,
+                                          min = 0.0, max = 1.0)
+                           ),
+                           strong("Choose the HF band values for 
+                                       Fourier Analysis"),
+                           splitLayout(
+                             numericInput("HF1_tf", "", value = 0.15,
+                                          min = 0.0, max = 1.0),
+                             numericInput("HF2_tf", "", value = 0.4,
+                                          min = 0.0, max = 1.0)
+                           )
+                  ),
                   tabPanel("Embedding Dimension & Timelag",
+                           actionButton("start_nla",
+                                        "Start Nonlinear Analysis (WARNING: takes a long time)"),
                            numericInput("lagMax", "Choose the maximum lag",
                                         value = 100, min = 0, max = 1000),
                            numericInput("numberPoints",
@@ -131,15 +171,18 @@ user_interface <- fluidPage(
                            plotOutput("freq_analysis"),
                            tableOutput("freq_table")
                   ),
+                  tabPanel("Time-Freq Analysis",
+                           h3("Time-Freq Analysis"),
+                           plotOutput("power_band")
+                  ),
                   tabPanel("Nonlinear Analysis",
-                           actionButton("start_nla",
-                                        "Start Nonlinear Analysis (WARNING: takes a long time)"),
+                           
                            tabsetPanel(id = "t3", type = "tabs",
                                        tabPanel(("Embedding Dimension & Timelag"),
                                                 h3("Nonlinear Analysis: Embedding Dimension and Timelag estimations"),
-                                                strong("Time Lag Estimation"),
+                                                strong("Time Lag Estimation: ", textOutput("timelagOut")),
                                                 withSpinner(hide.ui = TRUE, id = "tLSpinner", plotOutput("time_lag")),
-                                                strong("Embedding Dimension Estimation"),
+                                                strong("Embedding Dimension Estimation: ", textOutput("embeddingOut")),
                                                 withSpinner(hide.ui = TRUE, id = "eDSpinner", plotOutput("emb_dim"))
                                        ),
                                        tabPanel("Correlation Dimension",

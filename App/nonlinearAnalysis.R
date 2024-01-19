@@ -1,4 +1,7 @@
 timeLag <- function(input, output, session, hrv.data, kTimeLag){
+  output$timelagOut <- renderText({
+    kTimeLag
+  })
   output$time_lag <- renderPlot({
     CalculateTimeLag(
       hrv.data, method = "first.minimum", lagMax = input$lagMax,
@@ -8,6 +11,9 @@ timeLag <- function(input, output, session, hrv.data, kTimeLag){
 
 embeddingDim <- function(input, output, session, hrv.data, kTimeLag,
                          kEmbeddingDim){
+  output$embeddingOut <- renderText({
+    kEmbeddingDim
+  })
   output$emb_dim <- renderPlot({
     CalculateEmbeddingDim(
       hrv.data, numberPoints = input$numberPoints, timeLag = kTimeLag,

@@ -11,6 +11,17 @@ frequencyAnalysis <- function(input, output, session, hrv.data){
             HFmin = a[7], HFmax = a[8])
   })
   
+  hrv.data = CalculatePowerBand(hrv.data, indexFreqAnalysis = 1, size = input$size_tf,
+                                shift = input$shift, type = "fourier",
+                                ULFmin = input$ULF1_tf, ULFmax = input$ULF2_tf,
+                                VLFmin = input$VLF1_tf, VLFmax = input$VLF2_tf,
+                                LFmin = input$LF1_tf, LFmax = input$LF2_tf,
+                                HFmin = input$HF1_tf, HFmax = input$HF2_tf)
+  
+  output$power_band <- renderPlot({
+    PlotPowerBand(hrv.data, indexFreqAnalysis = 1)
+  })
+  
   BANDS = c("ULF", "VLF", "LF", "HF")
   ENERGY = CalculateEnergyInPSDBands(hrv.data, indexFreqAnalysis = 1,
                                      ULFmax = (input$ULF2),
