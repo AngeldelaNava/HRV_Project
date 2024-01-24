@@ -3,5 +3,5 @@ csvSum <- function(A, B){
 }
 
 csvDownload <- function(df, fileName){
-  write.csv(df, fileName)
+  write.csv(df, fileName, row.names = FALSE)
 }

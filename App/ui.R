@@ -16,8 +16,10 @@ user_interface <- fluidPage(
                            numericInput("interval",
                                         "Choose the interval of the Time Analyisis",
                                         value = 7.8125, min = 0.0, max = 20.0),
-                           actionButton("csv_button",
-                                        "Download time_analysis.csv")
+                           #actionButton("csv_button",
+                            #            "Download time_analysis.csv")
+                           downloadButton("csv_button",
+                                          "Download time_analysis.csv")
                   ),
                   tabPanel("Frequency Analysis",
                            numericInput("freqhr", "Choose the sample frequency",
@@ -54,8 +56,10 @@ user_interface <- fluidPage(
                              numericInput("HF2", "", value = 0.4,
                                           min = 0.0, max = 1.0)
                            ),
-                           actionButton("csv_button_f",
-                                        "Download freq_analysis.csv")
+                           #actionButton("csv_button_f",
+                            #            "Download freq_analysis.csv")
+                           downloadButton("csv_button_f",
+                                          "Download freq_analysis.csv")
                   ),
                   tabPanel("Time-Freq Analysis",
                            numericInput("size_tf", "Choose the size of the powerband calculations",
@@ -97,7 +101,8 @@ user_interface <- fluidPage(
                   ),
                   tabPanel("Embedding Dimension & Timelag",
                            actionButton("start_nla",
-                                        "Start Nonlinear Analysis (WARNING: takes a long time)"),
+                                        "Start Nonlinear Analysis (WARNING: Takes a long time)"),
+                           textOutput("starnl_loading_text"),
                            numericInput("lagMax", "Choose the maximum lag",
                                         value = 100, min = 0, max = 1000),
                            numericInput("numberPoints",
@@ -110,8 +115,13 @@ user_interface <- fluidPage(
                   tabPanel("Correlation Dimension",
                            actionButton("start_cd",
                                         "Start Correlation dimension (WARNING: Takes a long time)"),
-                           actionButton("reg_correlation",
-                                        "Estimate the regression line"),
+                           textOutput("starcd_loading_text"),
+                           conditionalPanel(
+                             condition = "input.start_cd > 0",
+                             actionButton("reg_correlation",
+                                          "Estimate the regression line (WARNING: Takes a long time)")
+                           ),
+                           textOutput("cd_estim_loading_text"),
                            p("\n"),
                            strong("Choose the range of distance to compute the correlation sum"),
                            splitLayout(
@@ -133,14 +143,18 @@ user_interface <- fluidPage(
                              numericInput("maxRegC", "", value = 50,
                                           min = 1, max = 100)
                            ),
-                           actionButton("csv_button_c",
+                           downloadButton("csv_button_c",
                                         "Download corr_analysis.csv")
                   ),
                   tabPanel("Maximum Lyapunov",
                            actionButton("start_lya",
-                                        "Start Max. Lyapunov exponent (WARNING: Takes a long time)"),
-                           actionButton("reg_lya",
-                                        "Estimate the regression line"),
+                                        "Start Max. Lyapunov exp. (WARNING: Takes a long time)"),
+                           textOutput("starML_loading_text"),
+                           conditionalPanel(
+                             condition = "input.start_lya > 0",
+                             actionButton("reg_lya",
+                                        "Estimate the regression line (WARNING: Takes a long time)")),
+                           textOutput("ML_estimation_loading_text"),
                            numericInput("radius",
                                         "Choose the radius of the analysis",
                                         value = 50, min = 1, max = 5000),
@@ -153,11 +167,11 @@ user_interface <- fluidPage(
                                           max = 20),
                              numericInput("maxRegL", "", value = 20,
                                           min = 0, max = 20)),
-                           actionButton("csv_button_ml",
+                           downloadButton("csv_button_ml",
                                         "Download lya_analysis.csv")
                   )
       ),
-      actionButton("downloadButton", "Download analysis.csv")
+      downloadButton("downloadButton", "Download analysis.csv")
     ),
     mainPanel(
       tabsetPanel(id = "t2", type = "pills",
@@ -181,19 +195,19 @@ user_interface <- fluidPage(
                                        tabPanel(("Embedding Dimension & Timelag"),
                                                 h3("Nonlinear Analysis: Embedding Dimension and Timelag estimations"),
                                                 strong("Time Lag Estimation: ", textOutput("timelagOut")),
-                                                withSpinner(hide.ui = TRUE, id = "tLSpinner", plotOutput("time_lag")),
+                                                plotOutput("time_lag"),
                                                 strong("Embedding Dimension Estimation: ", textOutput("embeddingOut")),
-                                                withSpinner(hide.ui = TRUE, id = "eDSpinner", plotOutput("emb_dim"))
+                                                plotOutput("emb_dim")
                                        ),
                                        tabPanel("Correlation Dimension",
                                                 h3("Nonlinear Analysis by Correlation Dimension"),
-                                                withSpinner(hide.ui = TRUE, id = "cDSpinner", plotOutput("corr_plot")),
+                                                plotOutput("corr_plot"),
                                                 p("Value of the statistic: ",
                                                   textOutput("corr_text"))
                                        ),
                                        tabPanel("Maximum Lyapunov",
                                                 h3("Nonlinear Analysis by Maximum Lyapunov Exponent"),
-                                                withSpinner(hide.ui = TRUE, id = "mLSpinner", plotOutput("lya_plot")),
+                                                plotOutput("lya_plot"),
                                                 p("Value of the statistic: ",
                                                   textOutput("lya_text"))
                                        )
